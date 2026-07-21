@@ -34,7 +34,10 @@ namespace NeuralNetwork_CodeBlog_course
                 sum += inputs[i] * Weights[i];
             }
 
-            Output = Neuron.Sigmoid(sum);
+            if (NeuronType != NeuronType.Input)
+                Output = Sigmoid(sum);
+            else
+                Output = sum;
 
             return Output;
         }
@@ -42,6 +45,15 @@ namespace NeuralNetwork_CodeBlog_course
         private static double Sigmoid(double x)
         {
             return 1.0 / (1.0 + Math.Pow(Math.E, -x));
+        }
+
+        public void SetWeights(params double[] weights)
+        {
+            // TODO: удалить после добавления возможности обучения сети.
+            for (int i = 0; i < weights.Length; i++)
+            {
+                Weights[i] = weights[i];
+            }
         }
 
         public override string ToString()
