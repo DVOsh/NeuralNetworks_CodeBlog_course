@@ -8,13 +8,16 @@ namespace NeuralNetwork_CodeBlog_course
     {
         public List<Neuron> Neurons { get; }
 
-        public int Count => Neurons?.Count ?? 0;
+        public int NeuronCount => Neurons?.Count ?? 0;
+
+        public NeuronType Type { get; }
 
         public Layer(List<Neuron> neurons, NeuronType type = NeuronType.Normal)
         {
             // TODO: проверить все входные нейроны на соответствие типу
 
             Neurons = neurons;
+            Type = type;
         }
 
         public List<double> GetSignals()
@@ -27,6 +30,11 @@ namespace NeuralNetwork_CodeBlog_course
             }
 
             return result;
+        }
+
+        public override string ToString()
+        {
+            return Type.ToString();
         }
     }
 }
