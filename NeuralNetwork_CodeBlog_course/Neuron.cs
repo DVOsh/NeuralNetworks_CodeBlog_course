@@ -30,7 +30,7 @@ namespace NeuralNetwork_CodeBlog_course
 
             for (int i = 0; i < inputCount; i++)
             {
-                Weights.Add(rnd.NextDouble());
+                Weights.Add(NeuronType == NeuronType.Input ? 1 : rnd.NextDouble());
                 Inputs.Add(0);
             }
         }
