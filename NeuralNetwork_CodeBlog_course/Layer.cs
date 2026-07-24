@@ -20,7 +20,7 @@ namespace NeuralNetwork_CodeBlog_course
             Type = type;
         }
 
-        public List<double> GetSignals()
+        public List<double> GetOutputs()
         {
             var result = new List<double>();
 
