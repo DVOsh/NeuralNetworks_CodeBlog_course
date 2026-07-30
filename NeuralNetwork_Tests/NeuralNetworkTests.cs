@@ -28,30 +28,30 @@ namespace NeuralNetwork_Tests
                 var expecteds = new double[] { 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1 };
                 var dataset = new double[,]
                 {
-                // Результат - Пациент болен - 1
-                //             Пациент здоров - 0
+                    // Результат - Пациент болен - 1
+                    //             Пациент здоров - 0
             
-                // Неправильная температура T
-                // Хороший возраст A
-                // Курит S
-                // Правильно питается F
-                //T  A  S  F
-                { 0, 0, 0, 0 },
-                { 0, 0, 0, 1 },
-                { 0, 0, 1, 0 },
-                { 0, 0, 1, 1 },
-                { 0, 1, 0, 0 },
-                { 0, 1, 0, 1 },
-                { 0, 1, 1, 0 },
-                { 0, 1, 1, 1 },
-                { 1, 0, 0, 0 },
-                { 1, 0, 0, 1 },
-                { 1, 0, 1, 0 },
-                { 1, 0, 1, 1 },
-                { 1, 1, 0, 0 },
-                { 1, 1, 0, 1 },
-                { 1, 1, 1, 0 },
-                { 1, 1, 1, 1 },
+                    // Неправильная температура T
+                    // Хороший возраст A
+                    // Курит S
+                    // Правильно питается F
+                    //T  A  S  F
+                    { 0, 0, 0, 0 },
+                    { 0, 0, 0, 1 },
+                    { 0, 0, 1, 0 },
+                    { 0, 0, 1, 1 },
+                    { 0, 1, 0, 0 },
+                    { 0, 1, 0, 1 },
+                    { 0, 1, 1, 0 },
+                    { 0, 1, 1, 1 },
+                    { 1, 0, 0, 0 },
+                    { 1, 0, 0, 1 },
+                    { 1, 0, 1, 0 },
+                    { 1, 0, 1, 1 },
+                    { 1, 1, 0, 0 },
+                    { 1, 1, 0, 1 },
+                    { 1, 1, 1, 0 },
+                    { 1, 1, 1, 1 },
                 };
 
                 var topology = new Topology(4, 1, 0.1, 5);
@@ -124,6 +124,86 @@ namespace NeuralNetwork_Tests
                     var actual = Math.Round(results[i], 3);
                     Assert.AreEqual(expected, actual);
                 }
+            }
+
+            [TestMethod]
+            public void RecognizeImages()
+            {
+                var parasitizedPath = @"D:\Coding\CSharp\Education\CodeBlog\Datasets\cell_images\Parasitized";
+                var uninfectedPath = @"D:\Coding\CSharp\Education\CodeBlog\Datasets\cell_images\Uninfected";
+
+                var converter = new PictureConverter();
+                var testParasitedImageInput = converter.Convert(@"D:\Coding\CSharp\Education\CodeBlog\NeuralNetwork_CodeBlog_course\NeuralNetwork_Tests\Images\Parasitized.png");
+                var testUninfectedImageInput = converter.Convert(@"D:\Coding\CSharp\Education\CodeBlog\NeuralNetwork_CodeBlog_course\NeuralNetwork_Tests\Images\Uninfected.png");
+
+
+                var topology = new Topology(testParasitedImageInput.Count, 1, 0.1, 10);
+                var neuralNetwork = new NeuralNetwork(topology);
+
+                double[,] parasitizedInputs = GetData(parasitizedPath, converter, testParasitedImageInput);
+                neuralNetwork.Learn([1.0], parasitizedInputs, 100);
+
+                double[,] uninfectedInputs = GetData(uninfectedPath, converter, testUninfectedImageInput);
+                neuralNetwork.Learn([1.0], uninfectedInputs, 100);
+
+                var par = neuralNetwork.FeedForward(testParasitedImageInput.Select(t => (double)t).ToArray()).Output;
+                var uninf = neuralNetwork.FeedForward(testUninfectedImageInput.Select(t => (double)t).ToArray()).Output;
+
+                Assert.AreEqual(1, Math.Round(par, 2));
+                Assert.AreEqual(0, Math.Round(uninf, 2));
+            }
+
+            private static double[,] GetData(string parasitizedPath, PictureConverter converter, List<int> testImageInput)
+            {
+                var parasitizedImages = Directory.GetFiles(parasitizedPath);
+                var datasetSize = 100;
+                var parasitizedInputs = new double[datasetSize, testImageInput.Count];
+                for (int i = 0; i < datasetSize; i++)
+                {
+                    var convertedImageInput = converter.Convert(parasitizedImages[i]);
+
+                    for (int j = 0; j < convertedImageInput.Count; j++)
+                    {
+                        parasitizedInputs[i, j] = convertedImageInput[j];
+                    }
+                }
+
+                return parasitizedInputs;
+            }
+
+            [TestMethod]
+            public void DimensionTest()
+            {
+                var dataset = new double[,]
+                {
+                    // Результат - Пациент болен - 1
+                    //             Пациент здоров - 0
+            
+                    // Неправильная температура T
+                    // Хороший возраст A
+                    // Курит S
+                    // Правильно питается F
+                    //T  A  S  F
+                    { 0, 0, 0, 0 },
+                    { 0, 0, 0, 1 },
+                    { 0, 0, 1, 0 },
+                    { 0, 0, 1, 1 },
+                    { 0, 1, 0, 0 },
+                    { 0, 1, 0, 1 },
+                    { 0, 1, 1, 0 },
+                    { 0, 1, 1, 1 },
+                    { 1, 0, 0, 0 },
+                    { 1, 0, 0, 1 },
+                    { 1, 0, 1, 0 },
+                    { 1, 0, 1, 1 },
+                    { 1, 1, 0, 0 },
+                    { 1, 1, 0, 1 },
+                    { 1, 1, 1, 0 },
+                    { 1, 1, 1, 1 },
+                };
+
+                Console.WriteLine(dataset.GetLength(0));
+                Console.WriteLine(dataset.GetLength(1));
             }
         }
     }

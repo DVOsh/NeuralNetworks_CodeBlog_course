@@ -164,31 +164,31 @@ namespace NeuralNetwork_CodeBlog_course
         {
             var result = new double[inputs.GetLength(0), inputs.GetLength(1)];
 
-            for (int column = 0; column < inputs.GetLength(1); column++)
+            for (int row = 0; row < inputs.GetLength(0); row++)
             {
-                var min = inputs[0, column];
-                var max = inputs[0, column];
+                var min = inputs[row, 0];
+                var max = inputs[row, 0];
 
-                for (int row = 1; row < inputs.GetLength(0); row++)
+                for (int item = 1; item < inputs.GetLength(1); item++)
                 {
-                    var item = inputs[row, column];
+                    var input = inputs[row, item];
 
-                    if (item < min)
+                    if (input < min)
                     {
-                        min = item;
+                        min = input;
                     }
 
-                    if (item > max)
+                    if (input > max)
                     {
-                        max = item;
+                        max = input;
                     }
                 }
 
                 var divider = max - min;
 
-                for (int row = 1; row < inputs.GetLength(0); row++)
+                for (int item = 1; item < inputs.GetLength(1); item++)
                 {
-                    result[row, column] = (inputs[row, column] - min) / divider;
+                    result[row, item] = (inputs[row, item] - min) / divider;
                 }
             }
 
@@ -199,27 +199,27 @@ namespace NeuralNetwork_CodeBlog_course
         {
             var result = new double[inputs.GetLength(0), inputs.GetLength(1)];
 
-            for (int column = 0; column < inputs.GetLength(1); column++)
+            for (int row = 0; row < inputs.GetLength(0); row++)
             {
                 // Среднее значение сигнала
                 var sum = 0.0;
-                for (int row = 0; row < inputs.GetLength(0); row++)
+                for (int item = 0; item < inputs.GetLength(1); item++)
                 {
-                    sum += inputs[row, column];
+                    sum += inputs[row, item];
                 }
-                var average = sum / inputs.GetLength(0);
+                var average = sum / inputs.GetLength(1);
 
                 // Стандартное квадратичное отклонение сигнала
                 var error = 0.0;
-                for (int row = 0; row < inputs.GetLength(0); row++)
+                for (int item = 0; item < inputs.GetLength(1); item++)
                 {
-                    error += Math.Pow((inputs[row, column] - average), 2);
+                    error += Math.Pow((inputs[row, item] - average), 2);
                 }
-                var stDev = Math.Sqrt(error / inputs.GetLength(0));
+                var stDev = Math.Sqrt(error / inputs.GetLength(1));
 
-                for (int row = 0; row < inputs.GetLength(0); row++)
+                for (int item = 0; item < inputs.GetLength(1); item++)
                 {
-                    result[row, column] = (inputs[row, column] - average) / stDev;
+                    result[row, item] = (inputs[row, item] - average) / stDev;
                 }
             }
 

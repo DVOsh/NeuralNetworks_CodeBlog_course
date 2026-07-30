@@ -28,7 +28,6 @@ namespace NeuralNetwork_CodeBlog_course
                 }
             }
 
-
             return result;
         }
 
