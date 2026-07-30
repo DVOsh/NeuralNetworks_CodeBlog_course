@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Reflection;
 using System.Text;
 
@@ -37,13 +38,15 @@ namespace NeuralNetwork_CodeBlog_course
 
         public double Learn(double[] expected, double[,] dataset, int epoch)
         {
+            var signals = Normalization(dataset);
+
             var error = 0.0;
 
             for (int i = 0; i < epoch; i++)
             {
                 for (int j = 0; j < expected.Length; j++)
                 {
-                    var input = GetRow(dataset, j);
+                    var input = GetRow(signals, j);
 
                     error += BackPropagation(expected[j], input);
                 }
