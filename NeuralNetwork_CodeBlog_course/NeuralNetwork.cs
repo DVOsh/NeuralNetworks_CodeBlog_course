@@ -36,9 +36,10 @@ namespace NeuralNetwork_CodeBlog_course
             return Layers.Last().Neurons.OrderByDescending(n => n.Output).First();
         }
 
-        public double Learn(double[] expected, double[,] dataset, int epoch)
+        public double Learn(double[] expected, double[,] dataset, int epoch, bool needNormalize)
         {
-            var signals = Normalization(dataset);
+            if (needNormalize)
+                dataset = Normalization(dataset);
 
             var error = 0.0;
 
@@ -46,7 +47,7 @@ namespace NeuralNetwork_CodeBlog_course
             {
                 for (int j = 0; j < expected.Length; j++)
                 {
-                    var input = GetRow(signals, j);
+                    var input = GetRow(dataset, j);
 
                     error += BackPropagation(expected[j], input);
                 }

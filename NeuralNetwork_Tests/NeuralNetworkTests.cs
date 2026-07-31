@@ -56,7 +56,7 @@ namespace NeuralNetwork_Tests
 
                 var topology = new Topology(4, 1, 0.1, 5);
                 var neuralNetwork = new NeuralNetwork(topology);
-                var difference = neuralNetwork.Learn(expecteds, dataset, 10);
+                var difference = neuralNetwork.Learn(expecteds, dataset, 10, false);
 
                 var results = new List<double>();
                 //foreach (var data in dataset)
@@ -110,7 +110,7 @@ namespace NeuralNetwork_Tests
 
                 var topology = new Topology(outputs.Count, 1, 0.1, 10);
                 var neuralNetwork = new NeuralNetwork_CodeBlog_course.NeuralNetwork(topology);
-                var difference = neuralNetwork.Learn(outputs.ToArray(), inputSignals, 10000);
+                var difference = neuralNetwork.Learn(outputs.ToArray(), inputSignals, 10000, false);
 
                 var results = new List<double>();
                 for (int i = 0; i < outputs.Count; i++)
@@ -141,10 +141,10 @@ namespace NeuralNetwork_Tests
                 var neuralNetwork = new NeuralNetwork(topology);
 
                 double[,] parasitizedInputs = GetData(parasitizedPath, converter, testParasitedImageInput);
-                neuralNetwork.Learn([1.0], parasitizedInputs, 100);
+                neuralNetwork.Learn([1.0], parasitizedInputs, 100, false);
 
                 double[,] uninfectedInputs = GetData(uninfectedPath, converter, testUninfectedImageInput);
-                neuralNetwork.Learn([1.0], uninfectedInputs, 100);
+                neuralNetwork.Learn([1.0], uninfectedInputs, 100, false);
 
                 var par = neuralNetwork.FeedForward(testParasitedImageInput.Select(t => (double)t).ToArray()).Output;
                 var uninf = neuralNetwork.FeedForward(testUninfectedImageInput.Select(t => (double)t).ToArray()).Output;
