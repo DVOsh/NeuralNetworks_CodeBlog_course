@@ -137,7 +137,7 @@ namespace NeuralNetwork_Tests
                 var testUninfectedImageInput = converter.Convert(@"D:\Coding\CSharp\Education\CodeBlog\NeuralNetwork_CodeBlog_course\NeuralNetwork_Tests\Images\Uninfected.png");
 
 
-                var topology = new Topology(testParasitedImageInput.Count, 1, 0.1, testParasitedImageInput.Count / 2);
+                var topology = new Topology(testParasitedImageInput.Length, 1, 0.1, testParasitedImageInput.Length / 2);
                 var neuralNetwork = new NeuralNetwork(topology);
 
                 double[,] parasitizedInputs = GetData(parasitizedPath, converter, testParasitedImageInput);
@@ -153,16 +153,16 @@ namespace NeuralNetwork_Tests
                 Assert.AreEqual(0, Math.Round(uninf, 2));
             }
 
-            private static double[,] GetData(string parasitizedPath, PictureConverter converter, List<int> testImageInput)
+            private static double[,] GetData(string parasitizedPath, PictureConverter converter, double[] testImageInput)
             {
                 var parasitizedImages = Directory.GetFiles(parasitizedPath);
                 var datasetSize = 100;
-                var parasitizedInputs = new double[datasetSize, testImageInput.Count];
+                var parasitizedInputs = new double[datasetSize, testImageInput.Length];
                 for (int i = 0; i < datasetSize; i++)
                 {
                     var convertedImageInput = converter.Convert(parasitizedImages[i]);
 
-                    for (int j = 0; j < convertedImageInput.Count; j++)
+                    for (int j = 0; j < convertedImageInput.Length; j++)
                     {
                         parasitizedInputs[i, j] = convertedImageInput[j];
                     }

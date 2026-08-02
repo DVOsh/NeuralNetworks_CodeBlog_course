@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="MedicalSystem/MedicalSystem.csproj" Id="a3a98a95-e9a7-4ca3-b0c3-fa4e161a1d50" />
   <Project Path="NeuralNetwork_CodeBlog_course/NeuralNetwork_CodeBlog_course.csproj" />
   <Project Path="NeuralNetwork_Tests/NeuralNetwork_Tests.csproj" Id="c3619beb-fb8e-45f9-865b-ce30d284709b" />
 </Solution>

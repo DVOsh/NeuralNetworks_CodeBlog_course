@@ -10,9 +10,9 @@ namespace NeuralNetwork_CodeBlog_course
 
         public int Boundary { get; set; } = 128;
 
-        public List<int> Convert(string path)
+        public double[] Convert(string path)
         {
-            var result = new List<int>();
+            var result = new List<double>();
 
             var image = new Bitmap(path);
             var resizeImage = new Bitmap(image, new Size(50, 50));
@@ -29,7 +29,7 @@ namespace NeuralNetwork_CodeBlog_course
                 }
             }
 
-            return result;
+            return result.ToArray();
         }
 
         private int Brightness(Color pixel)
@@ -38,7 +38,7 @@ namespace NeuralNetwork_CodeBlog_course
             return result < Boundary ? 0 : 1;
         }
 
-        public void Save(string path, List<int> pixels)
+        public void Save(string path, double[] pixels)
         {
             var image = new Bitmap(Width, Height);
             for (int y = 0; y < image.Height; y++)
