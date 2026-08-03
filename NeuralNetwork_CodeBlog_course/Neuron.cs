@@ -38,7 +38,7 @@ namespace NeuralNetwork_CodeBlog_course
         public double FeedForward(List<double> inputs)
         {
             if (inputs.Count != Weights.Count)
-                return 0;
+                throw new ArgumentException("Inputs count must be must be equal to weights count!");
 
             for (int i = 0; i < inputs.Count; i++)
             {
