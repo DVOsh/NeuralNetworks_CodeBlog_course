@@ -6,30 +6,30 @@ namespace MedicalSystem
 {
     internal class Patient
     {
-        public double Age { get; set; }
+        public string Age { get; set; }
 
-        public double Sex { get; set; }
+        public string Sex { get; set; }
 
-        public double ChestPainType { get; set; }
+        public string ChestPainType { get; set; }
 
-        public double BloodPressure { get; set; }
+        public string BloodPressure { get; set; }
 
-        public double Cholestoral { get; set; }
+        public string Cholestoral { get; set; }
 
-        public double Sugar { get; set; }
+        public string Sugar { get; set; }
 
-        public double Electrocardiographic { get; set; }
+        public string Electrocardiographic { get; set; }
 
-        public double HearthRate { get; set; }
+        public string HearthRate { get; set; }
 
-        public double InducedAngina { get; set; }
+        public string InducedAngina { get; set; }
 
-        public double StDepression { get; set; }
+        public string StDepression { get; set; }
 
-        public double Slope { get; set; }
+        public string Slope { get; set; }
 
-        public double NumberMajorVessels { get; set; }
+        public string NumberMajorVessels { get; set; }
 
-        public double Thal { get; set; }
+        public string Thal { get; set; }
     }
 }

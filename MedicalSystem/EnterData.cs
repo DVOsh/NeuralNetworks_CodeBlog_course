@@ -29,7 +29,7 @@ namespace MedicalSystem
             {
                 var patient = new Patient();
 
-                foreach (var textBox in Inputs)
+                foreach (var textBox in form.Inputs)
                 {
                     patient.GetType().InvokeMember(textBox.Tag.ToString(), 
                         BindingFlags.Instance | BindingFlags.Public | BindingFlags.SetProperty, 
