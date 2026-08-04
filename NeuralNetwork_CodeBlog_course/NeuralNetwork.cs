@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Reflection;
 using System.Text;
 
 namespace NeuralNetwork_CodeBlog_course
@@ -34,15 +36,20 @@ namespace NeuralNetwork_CodeBlog_course
             return Layers.Last().Neurons.OrderByDescending(n => n.Output).First();
         }
 
-        public double Learn(List<Tuple<double, double[]>> dataset, int epoch)
+        public double Learn(double[] expected, double[,] dataset, int epoch, bool needNormalize)
         {
+            if (needNormalize)
+                dataset = Normalization(dataset);
+
             var error = 0.0;
 
             for (int i = 0; i < epoch; i++)
             {
-                foreach (var data in dataset)
+                for (int j = 0; j < expected.Length; j++)
                 {
-                    error += BackPropagation(data.Item1, data.Item2);
+                    var input = GetRow(dataset, j);
+
+                    error += BackPropagation(expected[j], input);
                 }
             }
 
@@ -87,11 +94,11 @@ namespace NeuralNetwork_CodeBlog_course
             for (int i = 1; i < Layers.Count; i++)
             {
                 var layer = Layers[i];
-                var previousLayerSignals = Layers[i - 1].GetSignals();
+                var previousLayerOutputs = Layers[i - 1].GetOutputs();
 
                 foreach (var neuron in layer.Neurons)
                 {
-                    neuron.FeedForward(previousLayerSignals);
+                    neuron.FeedForward(previousLayerOutputs);
                 }
             }
         }
@@ -152,6 +159,85 @@ namespace NeuralNetwork_CodeBlog_course
 
             var outputLayer = new Layer(outputNeurons, NeuronType.Output);
             Layers.Add(outputLayer);
+        }
+
+        private static double[,] Scalling(double[,] inputs)
+        {
+            var result = new double[inputs.GetLength(0), inputs.GetLength(1)];
+
+            for (int row = 0; row < inputs.GetLength(0); row++)
+            {
+                var min = inputs[row, 0];
+                var max = inputs[row, 0];
+
+                for (int item = 1; item < inputs.GetLength(1); item++)
+                {
+                    var input = inputs[row, item];
+
+                    if (input < min)
+                    {
+                        min = input;
+                    }
+
+                    if (input > max)
+                    {
+                        max = input;
+                    }
+                }
+
+                var divider = max - min;
+
+                for (int item = 1; item < inputs.GetLength(1); item++)
+                {
+                    result[row, item] = (inputs[row, item] - min) / divider;
+                }
+            }
+
+            return result;
+        }
+
+        private static double[,] Normalization(double[,] inputs)
+        {
+            var result = new double[inputs.GetLength(0), inputs.GetLength(1)];
+
+            for (int row = 0; row < inputs.GetLength(0); row++)
+            {
+                // Среднее значение сигнала
+                var sum = 0.0;
+                for (int item = 0; item < inputs.GetLength(1); item++)
+                {
+                    sum += inputs[row, item];
+                }
+                var average = sum / inputs.GetLength(1);
+
+                // Стандартное квадратичное отклонение сигнала
+                var error = 0.0;
+                for (int item = 0; item < inputs.GetLength(1); item++)
+                {
+                    error += Math.Pow((inputs[row, item] - average), 2);
+                }
+                var stDev = Math.Sqrt(error / inputs.GetLength(1));
+
+                for (int item = 0; item < inputs.GetLength(1); item++)
+                {
+                    result[row, item] = (inputs[row, item] - average) / stDev;
+                }
+            }
+
+            return result;
+        }
+
+        public static double[] GetRow(double[,] matrix, int row)
+        {
+            if (matrix.GetLength(0) <= row)
+                throw new ArgumentException();
+
+            double[] row_res = new double[matrix.GetLength(1)];
+            for (int i = 0; i < matrix.GetLength(1); i++)
+            {
+                row_res[i] = matrix[row, i];
+            }
+            return row_res;
         }
     }
 }
