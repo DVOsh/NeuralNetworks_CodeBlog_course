@@ -16,13 +16,13 @@
             Type = type;
         }
 
-        public List<double> GetOutputs()
+        public double[] GetOutputs()
         {
-            List<double> result = new();
+            double[] result = new double[Neurons.Count];
 
-            foreach (var neuron in Neurons)
+            for (int i = 0; i < Neurons.Count; i++)
             {
-                result.Add(neuron.Output);
+                result[i] = Neurons[i].Output;
             }
 
             return result;

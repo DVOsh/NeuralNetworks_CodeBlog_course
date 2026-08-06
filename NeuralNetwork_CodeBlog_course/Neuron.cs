@@ -4,7 +4,7 @@
     {
         public List<double> Weights { get; }
 
-        public List<double> Inputs { get; }
+        public List<double> Signals { get; }
 
         public NeuronType NeuronType { get; }
 
@@ -15,9 +15,9 @@
         public Neuron(int inputCount, NeuronType type = NeuronType.Hidden)
         {
             NeuronType = type;
-            Weights = new List<double>();
-            Inputs = new List<double>();
-            InitWeightsRandomValue(inputCount);
+            Weights = [];
+            Signals = [];
+            NeuronStartInit(inputCount);
         }
 
         public void SetWeights(params double[] weights)
@@ -28,31 +28,29 @@
             }
         }
 
-        private void InitWeightsRandomValue(int inputCount)
+        private void NeuronStartInit(int inputCount)
         {
-            Random rnd = new Random();
+            Random rnd = new();
 
             for (int i = 0; i < inputCount; i++)
             {
                 Weights.Add(NeuronType == NeuronType.Input ? 1 : rnd.NextDouble());
-                Inputs.Add(0);
+                Signals.Add(0);
             }
         }
 
-        public double FeedForward(List<double> inputs)
+        public double CalcNeuronOutput(double[] signals)
         {
-            if (inputs.Count != Weights.Count)
+            if (signals.Length != Weights.Count)
                 throw new ArgumentException("Inputs count must be must be equal to weights count!");
 
-            for (int i = 0; i < inputs.Count; i++)
-            {
-                Inputs[i] = inputs[i];
-            }
-
             double sum = 0.0;
-            for (int i = 0; i < inputs.Count; i++)
+
+
+            for (int i = 0; i < signals.Length; i++)
             {
-                sum += inputs[i] * Weights[i];
+                Signals[i] = signals[i];
+                sum += signals[i] * Weights[i];
             }
 
             if (NeuronType != NeuronType.Input)
@@ -73,9 +71,9 @@
             for (int i = 0; i < Weights.Count; i++)
             {
                 double weight = Weights[i];
-                double input = Inputs[i];
+                double signal = Signals[i];
 
-                double newWeight = weight - input * Delta * learningRate;
+                double newWeight = weight - signal * Delta * learningRate;
                 Weights[i] = newWeight;
             }
         }

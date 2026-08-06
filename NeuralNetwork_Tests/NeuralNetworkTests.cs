@@ -17,7 +17,7 @@ namespace NeuralNetwork_Tests
                 neuralNetwork.Layers[1].Neurons[1].SetWeights(0.1, -0.3, 0.7, -0.3);
                 neuralNetwork.Layers[2].Neurons[0].SetWeights(1.2, 0.8);
 
-                var result = neuralNetwork.FeedForward([1, 0, 0, 0]).Output;
+                var result = neuralNetwork.FeedForward([1, 0, 0, 0]);
 
                 Assert.AreEqual(1, Math.Round(result));
             }
@@ -67,7 +67,7 @@ namespace NeuralNetwork_Tests
                 for (int i = 0; i < dataset.GetLength(0); i++)
                 {
                     double[] row = NeuralNetwork.GetRow(dataset, i);
-                    results.Add(neuralNetwork.FeedForward(row).Output);
+                    results.Add(neuralNetwork.FeedForward(row));
                 }
 
                 for (int i = 0; i < results.Count; i++)
@@ -115,7 +115,7 @@ namespace NeuralNetwork_Tests
                 var results = new List<double>();
                 for (int i = 0; i < outputs.Count; i++)
                 {
-                    results.Add(neuralNetwork.FeedForward(inputs[i]).Output);
+                    results.Add(neuralNetwork.FeedForward(inputs[i]));
                 }
 
                 for (int i = 0; i < results.Count; i++)
@@ -146,8 +146,8 @@ namespace NeuralNetwork_Tests
                 double[,] uninfectedInputs = GetData(uninfectedPath, converter, testUninfectedImageInput);
                 neuralNetwork.Learn([0.0], uninfectedInputs, 10000, false);
 
-                var par = neuralNetwork.FeedForward(testParasitedImageInput.Select(t => (double)t).ToArray()).Output;
-                var uninf = neuralNetwork.FeedForward(testUninfectedImageInput.Select(t => (double)t).ToArray()).Output;
+                var par = neuralNetwork.FeedForward(testParasitedImageInput.Select(t => (double)t).ToArray());
+                var uninf = neuralNetwork.FeedForward(testUninfectedImageInput.Select(t => (double)t).ToArray());
 
                 Assert.AreEqual(1, Math.Round(par, 2));
                 Assert.AreEqual(0, Math.Round(uninf, 2));

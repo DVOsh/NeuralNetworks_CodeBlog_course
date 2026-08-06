@@ -22,7 +22,7 @@ namespace NeuralNetwork_CodeBlog_course
         private void CreateInputLayer()
         {
             List<Neuron> inputNeurons = [];
-            for (int i = 0; i < Topology.InputCount; i++)
+            for (int i = 0; i < Topology.InputsCount; i++)
             {
                 Neuron neuron = new(1, NeuronType.Input);
                 inputNeurons.Add(neuron);
@@ -55,7 +55,7 @@ namespace NeuralNetwork_CodeBlog_course
             List<Neuron> outputNeurons = [];
             Layer lastLayer = Layers.Last();
 
-            for (int i = 0; i < Topology.OutputCount; i++)
+            for (int i = 0; i < Topology.OutputsCount; i++)
             {
                 Neuron neuron = new(lastLayer.NeuronCount, NeuronType.Output);
                 outputNeurons.Add(neuron);
@@ -65,27 +65,27 @@ namespace NeuralNetwork_CodeBlog_course
             Layers.Add(outputLayer);
         }
 
-        public Neuron FeedForward(params double[] inputSignals)
+        public double FeedForward(params double[] inputSignals)
         {
             SendSignalsToInputNeurons(inputSignals);
             FeedForwardAllLayersAfterInput();
 
-            if (Topology.OutputCount == 1)
+            if (Topology.OutputsCount == 1)
             {
-                return Layers.Last().Neurons[0];
+                return Layers.Last().Neurons[0].Output;
             }
 
-            return Layers.Last().Neurons.OrderByDescending(n => n.Output).First();
+            return Layers.Last().Neurons.OrderByDescending(n => n.Output).First().Output;
         }
 
         private void SendSignalsToInputNeurons(params double[] inputSignals)
         {
             for (int i = 0; i < inputSignals.Length; i++)
             {
-                List<double> signal = [inputSignals[i]];
+                double signal = inputSignals[i];
                 Neuron neuron = Layers[0].Neurons[i];
 
-                neuron.FeedForward(signal);
+                neuron.CalcNeuronOutput([signal]);
             }
         }
 
@@ -94,11 +94,11 @@ namespace NeuralNetwork_CodeBlog_course
             for (int i = 1; i < Layers.Count; i++)
             {
                 Layer layer = Layers[i];
-                List<double> previousLayerOutputs = Layers[i - 1].GetOutputs();
+                double[] previousLayerOutputs = Layers[i - 1].GetOutputs();
 
                 foreach (var neuron in layer.Neurons)
                 {
-                    neuron.FeedForward(previousLayerOutputs);
+                    neuron.CalcNeuronOutput(previousLayerOutputs);
                 }
             }
         }
@@ -125,7 +125,7 @@ namespace NeuralNetwork_CodeBlog_course
 
         private double BackPropagation(double expected, params double[] inputs)
         {
-            double actual = FeedForward(inputs).Output;
+            double actual = FeedForward(inputs);
 
             double difference = actual - expected;
 

@@ -36,7 +36,7 @@ namespace MedicalSystem
                         Type.DefaultBinder, patient, [textBox.Text]);
                 }
 
-                var result = Program.Controller.DataNetwork.FeedForward()?.Output;
+                var result = Program.Controller.DataNetwork.FeedForward();
 
                 return result == 1.0;
             }

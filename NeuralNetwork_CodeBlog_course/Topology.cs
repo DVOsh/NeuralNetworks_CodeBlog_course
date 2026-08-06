@@ -2,9 +2,9 @@
 {
     public class Topology
     {
-        public int InputCount { get; } //количество входов в нейронную сеть
+        public int InputsCount { get; } //количество входов в нейронную сеть
 
-        public int OutputCount { get; } 
+        public int OutputsCount { get; } 
 
         public double LearningRate { get; }
 
@@ -12,8 +12,8 @@
 
         public Topology(int inputCount, int outputCount, double learningRate, params int[] neuronsCountInHiddenLayers)
         {
-            InputCount = inputCount;
-            OutputCount = outputCount;
+            InputsCount = inputCount;
+            OutputsCount = outputCount;
             LearningRate = learningRate;
             HiddenLayers = [];
             HiddenLayers?.AddRange(neuronsCountInHiddenLayers);
