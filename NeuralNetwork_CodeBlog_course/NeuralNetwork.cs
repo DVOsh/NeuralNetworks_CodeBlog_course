@@ -87,7 +87,6 @@ namespace NeuralNetwork_CodeBlog_course
 
                 neuron.FeedForward(signal);
             }
-
         }
 
         private void FeedForwardAllLayersAfterInput()

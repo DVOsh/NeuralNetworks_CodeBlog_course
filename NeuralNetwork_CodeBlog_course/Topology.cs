@@ -15,7 +15,7 @@
             InputCount = inputCount;
             OutputCount = outputCount;
             LearningRate = learningRate;
-            HiddenLayers = new List<int>();
+            HiddenLayers = [];
             HiddenLayers?.AddRange(neuronsCountInHiddenLayers);
         }
     }
