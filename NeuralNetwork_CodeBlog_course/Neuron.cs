@@ -16,12 +16,20 @@ namespace NeuralNetwork_CodeBlog_course
 
         public double Delta { get; private set; }
 
-        public Neuron(int inputCount, NeuronType type = NeuronType.Normal)
+        public Neuron(int inputCount, NeuronType type = NeuronType.Hidden)
         {
             NeuronType = type;
             Weights = new List<double>();
             Inputs = new List<double>();
             InitWeightsRandomValue(inputCount);
+        }
+
+        public void SetWeights(params double[] weights)
+        {
+            for (int i = 0; i < weights.Length; i++)
+            {
+                Weights[i] = weights[i];
+            }
         }
 
         private void InitWeightsRandomValue(int inputCount)
@@ -59,26 +67,6 @@ namespace NeuralNetwork_CodeBlog_course
             return Output;
         }
 
-        private static double Sigmoid(double x)
-        {
-            return 1.0 / (1.0 + Math.Pow(Math.E, -x));
-        }
-
-        private static double SigmoidDx(double x)
-        {
-            double sigmoid = Sigmoid(x);
-            double result = sigmoid * (1 - sigmoid);
-            return result;
-        }
-
-        public void SetWeights(params double[] weights)
-        {
-            for (int i = 0; i < weights.Length; i++)
-            {
-                Weights[i] = weights[i];
-            }
-        }
-
         public void Learn(double error, double learningRate)
         {
             if (NeuronType == NeuronType.Input)
@@ -94,6 +82,18 @@ namespace NeuralNetwork_CodeBlog_course
                 double newWeight = weight - input * Delta * learningRate;
                 Weights[i] = newWeight;
             }
+        }
+
+        private static double Sigmoid(double x)
+        {
+            return 1.0 / (1.0 + Math.Pow(Math.E, -x));
+        }
+
+        private static double SigmoidDx(double x)
+        {
+            double sigmoid = Sigmoid(x);
+            double result = sigmoid * (1 - sigmoid);
+            return result;
         }
 
         public override string ToString()

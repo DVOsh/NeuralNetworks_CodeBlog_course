@@ -12,7 +12,7 @@ namespace NeuralNetwork_CodeBlog_course
 
         public NeuronType Type { get; }
 
-        public Layer(List<Neuron> neurons, NeuronType type = NeuronType.Normal)
+        public Layer(List<Neuron> neurons, NeuronType type = NeuronType.Hidden)
         {
             // TODO: проверить все входные нейроны на соответствие типу
 
@@ -22,7 +22,7 @@ namespace NeuralNetwork_CodeBlog_course
 
         public List<double> GetOutputs()
         {
-            var result = new List<double>();
+            List<double> result = new();
 
             foreach (var neuron in Neurons)
             {
