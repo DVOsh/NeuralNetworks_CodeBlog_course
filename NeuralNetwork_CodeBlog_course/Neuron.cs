@@ -26,7 +26,7 @@ namespace NeuralNetwork_CodeBlog_course
 
         private void InitWeightsRandomValue(int inputCount)
         {
-            var rnd = new Random();
+            Random rnd = new Random();
 
             for (int i = 0; i < inputCount; i++)
             {
@@ -45,7 +45,7 @@ namespace NeuralNetwork_CodeBlog_course
                 Inputs[i] = inputs[i];
             }
 
-            var sum = 0.0;
+            double sum = 0.0;
             for (int i = 0; i < inputs.Count; i++)
             {
                 sum += inputs[i] * Weights[i];
@@ -64,16 +64,15 @@ namespace NeuralNetwork_CodeBlog_course
             return 1.0 / (1.0 + Math.Pow(Math.E, -x));
         }
 
-        private double SigmoidDx(double x)
+        private static double SigmoidDx(double x)
         {
-            var sigmoid = Sigmoid(x);
-            var result = sigmoid * (1 - sigmoid);
+            double sigmoid = Sigmoid(x);
+            double result = sigmoid * (1 - sigmoid);
             return result;
         }
 
         public void SetWeights(params double[] weights)
         {
-            // TODO: удалить после добавления возможности обучения сети.
             for (int i = 0; i < weights.Length; i++)
             {
                 Weights[i] = weights[i];
@@ -89,10 +88,10 @@ namespace NeuralNetwork_CodeBlog_course
 
             for (int i = 0; i < Weights.Count; i++)
             {
-                var weight = Weights[i];
-                var input = Inputs[i];
+                double weight = Weights[i];
+                double input = Inputs[i];
 
-                var newWeight = weight - input * Delta * learningRate;
+                double newWeight = weight - input * Delta * learningRate;
                 Weights[i] = newWeight;
             }
         }
