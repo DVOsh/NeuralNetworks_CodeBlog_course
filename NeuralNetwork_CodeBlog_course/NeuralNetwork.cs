@@ -19,6 +19,52 @@ namespace NeuralNetwork_CodeBlog_course
             CreateOutputLayer();
         }
 
+        private void CreateInputLayer()
+        {
+            List<Neuron> inputNeurons = [];
+            for (int i = 0; i < Topology.InputCount; i++)
+            {
+                Neuron neuron = new(1, NeuronType.Input);
+                inputNeurons.Add(neuron);
+            }
+
+            Layer inputLayer = new(inputNeurons, NeuronType.Input);
+            Layers.Add(inputLayer);
+        }
+
+        private void CreateHiddenLayers()
+        {
+            for (int j = 0; j < Topology?.HiddenLayers?.Count; j++)
+            {
+                List<Neuron> hiddenNeurons = [];
+                Layer lastLayer = Layers.Last();
+
+                for (int i = 0; i < Topology.HiddenLayers[j]; i++)
+                {
+                    Neuron neuron = new(lastLayer.NeuronCount);
+                    hiddenNeurons.Add(neuron);
+                }
+
+                Layer hiddenLayer = new(hiddenNeurons);
+                Layers.Add(hiddenLayer);
+            }
+        }
+
+        private void CreateOutputLayer()
+        {
+            List<Neuron> outputNeurons = [];
+            Layer lastLayer = Layers.Last();
+
+            for (int i = 0; i < Topology.OutputCount; i++)
+            {
+                Neuron neuron = new(lastLayer.NeuronCount, NeuronType.Output);
+                outputNeurons.Add(neuron);
+            }
+
+            Layer outputLayer = new(outputNeurons, NeuronType.Output);
+            Layers.Add(outputLayer);
+        }
+
         public Neuron FeedForward(params double[] inputSignals)
         {
             SendSignalsToInputNeurons(inputSignals);
@@ -30,6 +76,32 @@ namespace NeuralNetwork_CodeBlog_course
             }
 
             return Layers.Last().Neurons.OrderByDescending(n => n.Output).First();
+        }
+
+        private void SendSignalsToInputNeurons(params double[] inputSignals)
+        {
+            for (int i = 0; i < inputSignals.Length; i++)
+            {
+                List<double> signal = [inputSignals[i]];
+                Neuron neuron = Layers[0].Neurons[i];
+
+                neuron.FeedForward(signal);
+            }
+
+        }
+
+        private void FeedForwardAllLayersAfterInput()
+        {
+            for (int i = 1; i < Layers.Count; i++)
+            {
+                Layer layer = Layers[i];
+                List<double> previousLayerOutputs = Layers[i - 1].GetOutputs();
+
+                foreach (var neuron in layer.Neurons)
+                {
+                    neuron.FeedForward(previousLayerOutputs);
+                }
+            }
         }
 
         public double Learn(double[] expected, double[,] dataset, int epoch, bool needNormalize)
@@ -85,76 +157,36 @@ namespace NeuralNetwork_CodeBlog_course
             return difference * difference;
         }
 
-        private void FeedForwardAllLayersAfterInput()
+        private static double[,] Normalization(double[,] inputs)
         {
-            for (int i = 1; i < Layers.Count; i++)
-            {
-                Layer layer = Layers[i];
-                List<double> previousLayerOutputs = Layers[i - 1].GetOutputs();
+            double[,] result = new double[inputs.GetLength(0), inputs.GetLength(1)];
 
-                foreach (var neuron in layer.Neurons)
+            for (int row = 0; row < inputs.GetLength(0); row++)
+            {
+                // Среднее значение сигнала
+                double sum = 0.0;
+                for (int item = 0; item < inputs.GetLength(1); item++)
                 {
-                    neuron.FeedForward(previousLayerOutputs);
+                    sum += inputs[row, item];
+                }
+                double average = sum / inputs.GetLength(1);
+
+                // Стандартное квадратичное отклонение сигнала
+                double error = 0.0;
+                for (int item = 0; item < inputs.GetLength(1); item++)
+                {
+                    error += Math.Pow((inputs[row, item] - average), 2);
+                }
+                double stDev = Math.Sqrt(error / inputs.GetLength(1));
+
+                // Нормализованные значения
+                for (int item = 0; item < inputs.GetLength(1); item++)
+                {
+                    result[row, item] = (inputs[row, item] - average) / stDev;
                 }
             }
-        }
 
-        private void SendSignalsToInputNeurons(params double[] inputSignals)
-        {
-            for (int i = 0; i < inputSignals.Length; i++)
-            {
-                List<double> signal = [inputSignals[i]];
-                Neuron neuron = Layers[0].Neurons[i];
-
-                neuron.FeedForward(signal);
-            }
-
-        }
-
-        private void CreateInputLayer()
-        {
-            List<Neuron> inputNeurons = [];
-            for (int i = 0; i < Topology.InputCount; i++)
-            {
-                Neuron neuron = new(1, NeuronType.Input);
-                inputNeurons.Add(neuron);
-            }
-
-            Layer inputLayer = new(inputNeurons, NeuronType.Input);
-            Layers.Add(inputLayer);
-        }
-
-        private void CreateHiddenLayers()
-        {
-            for (int j = 0; j < Topology?.HiddenLayers?.Count; j++)
-            {
-                List<Neuron> hiddenNeurons = [];
-                Layer lastLayer = Layers.Last();
-
-                for (int i = 0; i < Topology.HiddenLayers[j]; i++)
-                {
-                    Neuron neuron = new(lastLayer.NeuronCount);
-                    hiddenNeurons.Add(neuron);
-                }
-
-                Layer hiddenLayer = new(hiddenNeurons);
-                Layers.Add(hiddenLayer);
-            }
-        }
-
-        private void CreateOutputLayer()
-        {
-            List<Neuron> outputNeurons = [];
-            Layer lastLayer = Layers.Last();
-
-            for (int i = 0; i < Topology.OutputCount; i++)
-            {
-                Neuron neuron = new(lastLayer.NeuronCount, NeuronType.Output);
-                outputNeurons.Add(neuron);
-            }
-
-            Layer outputLayer = new(outputNeurons, NeuronType.Output);
-            Layers.Add(outputLayer);
+            return result;
         }
 
         private static double[,] Scalling(double[,] inputs)
@@ -186,38 +218,6 @@ namespace NeuralNetwork_CodeBlog_course
                 for (int item = 1; item < inputs.GetLength(1); item++)
                 {
                     result[row, item] = (inputs[row, item] - min) / divider;
-                }
-            }
-
-            return result;
-        }
-
-        private static double[,] Normalization(double[,] inputs)
-        {
-            double[,] result = new double[inputs.GetLength(0), inputs.GetLength(1)];
-
-            for (int row = 0; row < inputs.GetLength(0); row++)
-            {
-                // Среднее значение сигнала
-                double sum = 0.0;
-                for (int item = 0; item < inputs.GetLength(1); item++)
-                {
-                    sum += inputs[row, item];
-                }
-                double average = sum / inputs.GetLength(1);
-
-                // Стандартное квадратичное отклонение сигнала
-                double error = 0.0;
-                for (int item = 0; item < inputs.GetLength(1); item++)
-                {
-                    error += Math.Pow((inputs[row, item] - average), 2);
-                }
-                double stDev = Math.Sqrt(error / inputs.GetLength(1));
-
-                // Нормализованные значения
-                for (int item = 0; item < inputs.GetLength(1); item++)
-                {
-                    result[row, item] = (inputs[row, item] - average) / stDev;
                 }
             }
 
