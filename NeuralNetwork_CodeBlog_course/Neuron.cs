@@ -61,7 +61,7 @@
             return Output;
         }
 
-        public void Learn(double error, double learningRate)
+        public void WeightsCorrection(double error, double learningRate)
         {
             if (NeuronType == NeuronType.Input)
                 return;
