@@ -99,20 +99,22 @@ namespace NeuralNetwork_CodeBlog_course
             }
         }
 
-        public double Learn(double[] expected, double[,] dataset, int epoch, bool needNormalize)
+        public double Learn(Dataset dataset, int epoch, bool needNormalize, double testPct)
         {
+            double[,] inputs = GetInputSignalsMatrixFromDataset(dataset);
+
             if (needNormalize)
-                dataset = Normalization(dataset);
+                inputs = Normalization(inputs);
 
             double error = 0.0;
 
             for (int i = 0; i < epoch; i++)
             {
-                for (int j = 0; j < expected.Length; j++)
+                for (int j = 0; j < dataset.Results.Count; j++)
                 {
-                    double[] input = GetRow(dataset, j);
+                    double[] input = GetRow(inputs, j);
 
-                    error += BackPropagation(expected[j], input);
+                    error += BackPropagation(dataset.Results[j], input);
                 }
             }
 
@@ -221,6 +223,20 @@ namespace NeuralNetwork_CodeBlog_course
             }
 
             return result;
+        }
+
+        private static double[,] GetInputSignalsMatrixFromDataset(Dataset dataset)
+        {
+            double[,] inputSignals = new double[dataset.Inputs.Count, dataset.Inputs[0].Length];
+            for (int i = 0; i < inputSignals.GetLength(0); i++)
+            {
+                for (var j = 0; j < inputSignals.GetLength(1); j++)
+                {
+                    inputSignals[i, j] = dataset.Inputs[i][j];
+                }
+            }
+
+            return inputSignals;
         }
 
         public static double[] GetRow(double[,] matrix, int row)
