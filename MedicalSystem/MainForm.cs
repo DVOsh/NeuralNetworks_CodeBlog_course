@@ -21,7 +21,7 @@ namespace MedicalSystem
             {
                 var pictureConverter = new PictureConverter();
                 var inputs = pictureConverter.Convert(openFileDialog.FileName);
-                var result = Program.Controller.ImageNetwork.FeedForward().Output;
+                //var result = Program.Controller.ImageNetwork.FeedForward();
             }
         }
 

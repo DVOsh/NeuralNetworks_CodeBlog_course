@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace NeuralNetwork_CodeBlog_course
+﻿namespace NeuralNetwork_CodeBlog_course
 {
     public class Topology
     {
-        public int InputCount { get; } //количество входов в нейронную сеть
+        public int InputsCount { get; } //количество входов в нейронную сеть
 
-        public int OutputCount { get; } 
+        public int OutputsCount { get; } 
 
         public double LearningRate { get; }
 
@@ -16,10 +12,10 @@ namespace NeuralNetwork_CodeBlog_course
 
         public Topology(int inputCount, int outputCount, double learningRate, params int[] neuronsCountInHiddenLayers)
         {
-            InputCount = inputCount;
-            OutputCount = outputCount;
+            InputsCount = inputCount;
+            OutputsCount = outputCount;
             LearningRate = learningRate;
-            HiddenLayers = new List<int>();
+            HiddenLayers = [];
             HiddenLayers?.AddRange(neuronsCountInHiddenLayers);
         }
     }

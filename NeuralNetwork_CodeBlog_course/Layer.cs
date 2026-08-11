@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace NeuralNetwork_CodeBlog_course
+﻿namespace NeuralNetwork_CodeBlog_course
 {
     public class Layer
     {
@@ -12,7 +8,7 @@ namespace NeuralNetwork_CodeBlog_course
 
         public NeuronType Type { get; }
 
-        public Layer(List<Neuron> neurons, NeuronType type = NeuronType.Normal)
+        public Layer(List<Neuron> neurons, NeuronType type = NeuronType.Hidden)
         {
             // TODO: проверить все входные нейроны на соответствие типу
 
@@ -20,13 +16,13 @@ namespace NeuralNetwork_CodeBlog_course
             Type = type;
         }
 
-        public List<double> GetOutputs()
+        public double[] GetOutputs()
         {
-            var result = new List<double>();
+            double[] result = new double[Neurons.Count];
 
-            foreach (var neuron in Neurons)
+            for (int i = 0; i < Neurons.Count; i++)
             {
-                result.Add(neuron.Output);
+                result[i] = Neurons[i].Output;
             }
 
             return result;

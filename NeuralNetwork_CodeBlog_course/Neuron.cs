@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace NeuralNetwork_CodeBlog_course
+﻿namespace NeuralNetwork_CodeBlog_course
 {
     public class Neuron
     {
         public List<double> Weights { get; }
 
-        public List<double> Inputs { get; }
+        public List<double> Signals { get; }
 
         public NeuronType NeuronType { get; }
 
@@ -16,39 +12,45 @@ namespace NeuralNetwork_CodeBlog_course
 
         public double Delta { get; private set; }
 
-        public Neuron(int inputCount, NeuronType type = NeuronType.Normal)
+        public Neuron(int inputCount, NeuronType type = NeuronType.Hidden)
         {
             NeuronType = type;
-            Weights = new List<double>();
-            Inputs = new List<double>();
-            InitWeightsRandomValue(inputCount);
+            Weights = [];
+            Signals = [];
+            NeuronStartInit(inputCount);
         }
 
-        private void InitWeightsRandomValue(int inputCount)
+        public void SetWeights(params double[] weights)
         {
-            var rnd = new Random();
+            for (int i = 0; i < weights.Length; i++)
+            {
+                Weights[i] = weights[i];
+            }
+        }
+
+        private void NeuronStartInit(int inputCount)
+        {
+            Random rnd = new();
 
             for (int i = 0; i < inputCount; i++)
             {
                 Weights.Add(NeuronType == NeuronType.Input ? 1 : rnd.NextDouble());
-                Inputs.Add(0);
+                Signals.Add(0);
             }
         }
 
-        public double FeedForward(List<double> inputs)
+        public double CalcNeuronOutput(double[] signals)
         {
-            if (inputs.Count != Weights.Count)
+            if (signals.Length != Weights.Count)
                 throw new ArgumentException("Inputs count must be must be equal to weights count!");
 
-            for (int i = 0; i < inputs.Count; i++)
-            {
-                Inputs[i] = inputs[i];
-            }
+            double sum = 0.0;
 
-            var sum = 0.0;
-            for (int i = 0; i < inputs.Count; i++)
+
+            for (int i = 0; i < signals.Length; i++)
             {
-                sum += inputs[i] * Weights[i];
+                Signals[i] = signals[i];
+                sum += signals[i] * Weights[i];
             }
 
             if (NeuronType != NeuronType.Input)
@@ -59,28 +61,7 @@ namespace NeuralNetwork_CodeBlog_course
             return Output;
         }
 
-        private static double Sigmoid(double x)
-        {
-            return 1.0 / (1.0 + Math.Pow(Math.E, -x));
-        }
-
-        private double SigmoidDx(double x)
-        {
-            var sigmoid = Sigmoid(x);
-            var result = sigmoid * (1 - sigmoid);
-            return result;
-        }
-
-        public void SetWeights(params double[] weights)
-        {
-            // TODO: удалить после добавления возможности обучения сети.
-            for (int i = 0; i < weights.Length; i++)
-            {
-                Weights[i] = weights[i];
-            }
-        }
-
-        public void Learn(double error, double learningRate)
+        public void WeightsCorrection(double error, double learningRate)
         {
             if (NeuronType == NeuronType.Input)
                 return;
@@ -89,12 +70,24 @@ namespace NeuralNetwork_CodeBlog_course
 
             for (int i = 0; i < Weights.Count; i++)
             {
-                var weight = Weights[i];
-                var input = Inputs[i];
+                double weight = Weights[i];
+                double signal = Signals[i];
 
-                var newWeight = weight - input * Delta * learningRate;
+                double newWeight = weight - signal * Delta * learningRate;
                 Weights[i] = newWeight;
             }
+        }
+
+        private static double Sigmoid(double x)
+        {
+            return 1.0 / (1.0 + Math.Pow(Math.E, -x));
+        }
+
+        private static double SigmoidDx(double x)
+        {
+            double sigmoid = Sigmoid(x);
+            double result = sigmoid * (1 - sigmoid);
+            return result;
         }
 
         public override string ToString()
