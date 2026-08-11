@@ -22,98 +22,67 @@ namespace NeuralNetwork_Tests
                 Assert.AreEqual(1, Math.Round(result));
             }
 
-            //[TestMethod]
-            //public void BackPropagation_Learn_Test()
-            //{
-            //    var expecteds = new double[] { 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1 };
-            //    var dataset = new double[,]
-            //    {
-            //        // Результат - Пациент болен - 1
-            //        //             Пациент здоров - 0
-            
-            //        // Неправильная температура T
-            //        // Хороший возраст A
-            //        // Курит S
-            //        // Правильно питается F
-            //        //T  A  S  F
-            //        { 0, 0, 0, 0 },
-            //        { 0, 0, 0, 1 },
-            //        { 0, 0, 1, 0 },
-            //        { 0, 0, 1, 1 },
-            //        { 0, 1, 0, 0 },
-            //        { 0, 1, 0, 1 },
-            //        { 0, 1, 1, 0 },
-            //        { 0, 1, 1, 1 },
-            //        { 1, 0, 0, 0 },
-            //        { 1, 0, 0, 1 },
-            //        { 1, 0, 1, 0 },
-            //        { 1, 0, 1, 1 },
-            //        { 1, 1, 0, 0 },
-            //        { 1, 1, 0, 1 },
-            //        { 1, 1, 1, 0 },
-            //        { 1, 1, 1, 1 }
-            //    };
+            [TestMethod]
+            public void BackPropagation_Learn_Test()
+            {
+                string[] datasetHeaders = ["temp", "age", "smoking", "food"];
+                double[,] datasetInputs = new double[,]
+                {
+                    // Результат - Пациент болен - 1
+                    //             Пациент здоров - 0
 
-            //    var topology = new Topology(4, 1, 0.1, 2);
-            //    var neuralNetwork = new NeuralNetwork(topology);
-            //    var difference = neuralNetwork.Learn(expecteds, dataset, 10000, false);
+                    // Неправильная температура T
+                    // Хороший возраст A
+                    // Курит S
+                    // Правильно питается F
+                    //T  A  S  F
+                    { 0, 0, 0, 0 },
+                    { 0, 0, 0, 1 },
+                    { 0, 0, 1, 0 },
+                    { 0, 0, 1, 1 },
+                    { 0, 1, 0, 0 },
+                    { 0, 1, 0, 1 },
+                    { 0, 1, 1, 0 },
+                    { 0, 1, 1, 1 },
+                    { 1, 0, 0, 0 },
+                    { 1, 0, 0, 1 },
+                    { 1, 0, 1, 0 },
+                    { 1, 0, 1, 1 },
+                    { 1, 1, 0, 0 },
+                    { 1, 1, 0, 1 },
+                    { 1, 1, 1, 0 },
+                    { 1, 1, 1, 1 }
+                };
+                double[] datasetResults = [0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1];
+                Dataset dataset = new(datasetHeaders, datasetInputs, datasetResults);
 
-            //    var results = new List<double>();
-            //    //foreach (var data in dataset)
-            //    //{
-            //    //    results.Add(neuralNetwork.FeedForward(data).Output);
-            //    //}
+                var topology = new Topology(4, 1, 0.1, 2);
+                var neuralNetwork = new NeuralNetwork(topology);
+                var difference = neuralNetwork.Learn(dataset, 10000, 0);
 
-            //    for (int i = 0; i < dataset.GetLength(0); i++)
-            //    {
-            //        double[] row = NeuralNetwork.GetRow(dataset, i);
-            //        results.Add(neuralNetwork.FeedForward(row));
-            //    }
+                var learnResults = new List<double>();
+                for (int i = 0; i < dataset.Inputs.Count; i++)
+                {
+                    learnResults.Add(neuralNetwork.FeedForward(dataset.Inputs[i]));
+                }
 
-            //    for (int i = 0; i < results.Count; i++)
-            //    {
-            //        var expected = Math.Round(expecteds[i], 3);
-            //        var actual = Math.Round(results[i], 3);
-            //        Assert.AreEqual(expected, actual);
-            //    }
-            //}
+                for (int i = 0; i < learnResults.Count; i++)
+                {
+                    var expected = datasetResults[i];
+                    var actual = Math.Round(learnResults[i]);
+                    Assert.AreEqual(expected, actual);
+                }
+            }
 
             [TestMethod]
             public void Heart_DatasetTest()
             {
-                //var outputs = new List<double>();
-                //var inputs = new List<double[]>();
-
-                Dataset dataset = new();
-                dataset.GetDatasetFromCsvFile("../../../../../Datasets/heart_decrease/heart.csv");
-
-                //using var sr = new StreamReader("../../../../../Datasets/heart_decrease/heart.csv");
-                //var header = sr.ReadLine();
-
-                //while (!sr.EndOfStream)
-                //{
-                //    var row = sr.ReadLine();
-                //    //var values = row.Split(',').Select(v => Convert.ToDouble(v)).ToList();
-                //    var values = row.Split(',').Select(v => double.Parse(v.Replace(".", ","))).ToList();
-                //    var output = values.Last();
-                //    var input = values.Take(values.Count - 1).ToArray();
-
-                //    outputs.Add(output);
-                //    inputs.Add(input);
-                //}
-
-                //var inputSignals = new double[inputs.Count, inputs[0].Length];
-                //for (int i = 0; i < inputSignals.GetLength(0); i++)
-                //{
-                //    for (var j = 0; j < inputSignals.GetLength(1); j++)
-                //    {
-                //        inputSignals[i, j] = inputs[i][j];
-                //    }
-                //}
+                Dataset dataset = new("../../../../../Datasets/heart_decrease/heart.csv");
+                dataset.NormalizeInputs();
 
                 var topology = new Topology(dataset.Inputs[0].Length, 1, 0.1, dataset.Inputs[0].Length / 2);
                 var neuralNetwork = new NeuralNetwork(topology);
-                var difference = neuralNetwork.Learn(dataset, 10000, false, 0);
+                var difference = neuralNetwork.Learn(dataset, 10000, 0);
 
                 var results = new List<double>();
                 for (int i = 0; i < dataset.Results.Count; i++)
@@ -123,8 +92,8 @@ namespace NeuralNetwork_Tests
 
                 for (int i = 0; i < results.Count; i++)
                 {
-                    var expected = Math.Round(dataset.Results[i], 3);
-                    var actual = Math.Round(results[i], 3);
+                    var expected = dataset.Results[i];
+                    var actual = Math.Round(results[i]);
                     Assert.AreEqual(expected, actual);
                 }
             }
@@ -172,41 +141,6 @@ namespace NeuralNetwork_Tests
                 }
 
                 return parasitizedInputs;
-            }
-
-            [TestMethod]
-            public void DimensionTest()
-            {
-                var dataset = new double[,]
-                {
-                    // Результат - Пациент болен - 1
-                    //             Пациент здоров - 0
-            
-                    // Неправильная температура T
-                    // Хороший возраст A
-                    // Курит S
-                    // Правильно питается F
-                    //T  A  S  F
-                    { 0, 0, 0, 0 },
-                    { 0, 0, 0, 1 },
-                    { 0, 0, 1, 0 },
-                    { 0, 0, 1, 1 },
-                    { 0, 1, 0, 0 },
-                    { 0, 1, 0, 1 },
-                    { 0, 1, 1, 0 },
-                    { 0, 1, 1, 1 },
-                    { 1, 0, 0, 0 },
-                    { 1, 0, 0, 1 },
-                    { 1, 0, 1, 0 },
-                    { 1, 0, 1, 1 },
-                    { 1, 1, 0, 0 },
-                    { 1, 1, 0, 1 },
-                    { 1, 1, 1, 0 },
-                    { 1, 1, 1, 1 },
-                };
-
-                Console.WriteLine(dataset.GetLength(0));
-                Console.WriteLine(dataset.GetLength(1));
             }
         }
     }
