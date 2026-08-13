@@ -2,13 +2,37 @@
 {
     public class Dataset
     {
+        private double testPct;
+
         public List<string> Headers { get; private set; } = [];
 
         public List<double[]> Inputs { get; private set; } = [];
 
         public List<double> Results { get; private set; } = [];
 
-        public Dataset(string[] headers, double[,] inputs, double[] results)
+        public int LearnCount = 0;
+        public int TestCount = 0;
+
+        // Задание процента выборки для проведения тестов обучения
+        public double TestPct
+        {
+            get => testPct;
+            init
+            {
+                if (value < 0)
+                    throw new InvalidOperationException("Test percent must be greater than 0!");
+
+                if (value > 90)
+                    throw new InvalidOperationException("The neural network must learn from something!");
+
+                testPct = value;
+
+                TestCount = (int)(Inputs.Count * testPct / 100);
+                LearnCount = Inputs.Count - TestCount;
+            }
+        }
+
+        public Dataset(string[] headers, double[,] inputs, double[] results, double testPct = 0)
         {
             if (headers == null)
                 throw new ArgumentNullException("Set headers!");
@@ -21,9 +45,10 @@
             }
 
             Results = results.ToList();
+            TestPct = testPct;
         }
 
-        public Dataset(string path)
+        public Dataset(string path, double testPct)
         {
             using StreamReader sr = new(path);
             Headers = sr.ReadLine()?.Split(',').SkipLast(1).ToList()
@@ -42,6 +67,8 @@
                 Results.Add(result);
                 Inputs.Add(input);
             }
+
+            TestPct = testPct;
         }
 
         public void NormalizeInputs()

@@ -99,15 +99,15 @@ namespace NeuralNetwork_CodeBlog_course
             }
         }
 
-        public double Learn(Dataset dataset, int epoch, double testPct)
+        public double Learn(Dataset dataset, int epoch)
         {
             double error = 0.0;
 
             for (int i = 0; i < epoch; i++)
             {
-                for (int j = 0; j < dataset.Results.Count; j++)
-                {
-                    double[] input = dataset.Inputs[j];
+                for (int j = 0; j < dataset.Results.Count; j++) 
+                {                                               
+                    double[] input = dataset.Inputs[j];         
 
                     error += Backpropagation(dataset.Results[j], input);
                 }
