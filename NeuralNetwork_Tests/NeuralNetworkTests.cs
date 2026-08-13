@@ -56,22 +56,29 @@ namespace NeuralNetwork_Tests
                 double[] datasetResults = [0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1];
                 Dataset dataset = new(datasetHeaders, datasetInputs, datasetResults, 20);
 
-                var topology = new Topology(4, 1, 0.1, 2);
-                var neuralNetwork = new NeuralNetwork(topology);
-                var difference = neuralNetwork.Learn(dataset, 10000);
+                Topology topology = new(4, 1, 0.1, 2);
+                NeuralNetwork neuralNetwork = new(topology);
+                //double difference = neuralNetwork.Learn(dataset, 10000);
 
-                var learnResults = new List<double>();
-                for (int i = 0; i < dataset.Inputs.Count; i++)
+                //List<double> learnResults = [];
+                //for (int i = 0; i < dataset.Inputs.Count; i++)
+                //{
+                //    learnResults.Add(neuralNetwork.FeedForward(dataset.Inputs[i]));
+                //}
+
+                //for (int i = 0; i < learnResults.Count; i++)
+                //{
+                //    double expected = datasetResults[i];
+                //    double actual = Math.Round(learnResults[i]);
+                //    Assert.AreEqual(expected, actual);
+                //}
+
+                List<double> testResults = neuralNetwork.TestRestData(dataset);
+                for (int i = 0; i < testResults.Count; i++)
                 {
-                    learnResults.Add(neuralNetwork.FeedForward(dataset.Inputs[i]));
+                    Assert.AreEqual(dataset.Results[dataset.LearnCount + i], Math.Round(testResults[i]));
                 }
 
-                for (int i = 0; i < learnResults.Count; i++)
-                {
-                    var expected = datasetResults[i];
-                    var actual = Math.Round(learnResults[i]);
-                    Assert.AreEqual(expected, actual);
-                }
             }
 
             [TestMethod]
@@ -80,21 +87,27 @@ namespace NeuralNetwork_Tests
                 Dataset dataset = new("../../../../../Datasets/heart_decrease/heart.csv", 20);
                 dataset.NormalizeInputs();
 
-                var topology = new Topology(dataset.Inputs[0].Length, 1, 0.1, dataset.Inputs[0].Length / 2);
-                var neuralNetwork = new NeuralNetwork(topology);
-                var difference = neuralNetwork.Learn(dataset, 10000);
+                Topology topology = new(dataset.Inputs[0].Length, 1, 0.1, dataset.Inputs[0].Length / 2);
+                NeuralNetwork neuralNetwork = new(topology);
+                //double difference = neuralNetwork.Learn(dataset, 10000);
 
-                var results = new List<double>();
-                for (int i = 0; i < dataset.Results.Count; i++)
-                {
-                    results.Add(neuralNetwork.FeedForward(dataset.Inputs[i]));
-                }
+                //List<double> results = [];
+                //for (int i = 0; i < dataset.Results.Count; i++)
+                //{
+                //    results.Add(neuralNetwork.FeedForward(dataset.Inputs[i]));
+                //}
 
-                for (int i = 0; i < results.Count; i++)
+                //for (int i = 0; i < results.Count; i++)
+                //{
+                //    double expected = dataset.Results[i];
+                //    double actual = Math.Round(results[i]);
+                //    Assert.AreEqual(expected, actual);
+                //}
+
+                List<double> testResults = neuralNetwork.TestRestData(dataset);
+                for (int i = 0; i < testResults.Count; i++)
                 {
-                    var expected = dataset.Results[i];
-                    var actual = Math.Round(results[i]);
-                    Assert.AreEqual(expected, actual);
+                    Assert.AreEqual(dataset.Results[dataset.LearnCount + i], Math.Round(testResults[i]));
                 }
             }
 
