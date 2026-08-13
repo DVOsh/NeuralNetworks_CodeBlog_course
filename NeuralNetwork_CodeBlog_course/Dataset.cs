@@ -10,8 +10,8 @@
 
         public List<double> Results { get; private set; } = [];
 
-        public int LearnCount = 0;
-        public int TestCount = 0;
+        public int LearnCount { get; private set; }
+        public int TestCount { get; private set; }
 
         // Задание процента выборки для проведения тестов обучения
         public double TestPct
