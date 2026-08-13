@@ -152,5 +152,18 @@ namespace NeuralNetwork_CodeBlog_course
 
             return difference * difference;
         }
+
+        // Функия для тестирования нейросети на значениях, оставшихся после обучения
+        public List<double> TestRestData(Dataset dataset)
+        {
+            List<double> results = [];
+
+            for (int i = dataset.LearnCount; i < dataset.Inputs.Count; i++)
+            {
+                results.Add(FeedForward(dataset.Inputs[i]));
+            }
+
+            return results;
+        }
     }
 }
