@@ -4,6 +4,8 @@
     {
         private double testPct;
 
+        public List<int> Indexes { get; private set; }
+
         public List<string> Headers { get; private set; } = [];
 
         public List<double[]> Inputs { get; private set; } = [];
@@ -46,6 +48,7 @@
 
             Results = results.ToList();
             TestPct = testPct;
+            Indexes = Enumerable.Range(0, LearnCount).ToList();
         }
 
         public Dataset(string path, double testPct)
@@ -69,13 +72,14 @@
             }
 
             TestPct = testPct;
+            Indexes = Enumerable.Range(0, LearnCount).ToList();
         }
 
         public void NormalizeInputs()
         {
             if (Inputs.Count < 1)
                 throw new InvalidOperationException("Dataset is empty!");
-
+            
             int rowsCount = Inputs.Count;
             int headersCount = Headers.Count;
             double[,] result = new double[rowsCount, headersCount];
@@ -139,6 +143,11 @@
             }
 
             return result;
+        }
+
+        public void ShuffleLearnDataIndexes()
+        {
+            Indexes = Indexes.Shuffle().ToList();
         }
 
         private static double[] GetRow(double[,] matrix, int row)

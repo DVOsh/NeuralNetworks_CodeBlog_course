@@ -58,25 +58,12 @@ namespace NeuralNetwork_Tests
 
                 Topology topology = new(4, 1, 0.1, 2);
                 NeuralNetwork neuralNetwork = new(topology);
-                //double difference = neuralNetwork.Learn(dataset, 10000);
-
-                //List<double> learnResults = [];
-                //for (int i = 0; i < dataset.Inputs.Count; i++)
-                //{
-                //    learnResults.Add(neuralNetwork.FeedForward(dataset.Inputs[i]));
-                //}
-
-                //for (int i = 0; i < learnResults.Count; i++)
-                //{
-                //    double expected = datasetResults[i];
-                //    double actual = Math.Round(learnResults[i]);
-                //    Assert.AreEqual(expected, actual);
-                //}
+                neuralNetwork.Learn(dataset, 100, true);
 
                 List<double> testResults = neuralNetwork.TestRestData(dataset);
                 for (int i = 0; i < testResults.Count; i++)
                 {
-                    Assert.AreEqual(dataset.Results[dataset.LearnCount + i], Math.Round(testResults[i]));
+                    Assert.AreEqual(dataset.Results[dataset.LearnCount + i], Math.Round(testResults[i]), $"row: {i}");
                 }
 
             }
@@ -89,25 +76,12 @@ namespace NeuralNetwork_Tests
 
                 Topology topology = new(dataset.Inputs[0].Length, 1, 0.1, dataset.Inputs[0].Length / 2);
                 NeuralNetwork neuralNetwork = new(topology);
-                //double difference = neuralNetwork.Learn(dataset, 10000);
-
-                //List<double> results = [];
-                //for (int i = 0; i < dataset.Results.Count; i++)
-                //{
-                //    results.Add(neuralNetwork.FeedForward(dataset.Inputs[i]));
-                //}
-
-                //for (int i = 0; i < results.Count; i++)
-                //{
-                //    double expected = dataset.Results[i];
-                //    double actual = Math.Round(results[i]);
-                //    Assert.AreEqual(expected, actual);
-                //}
+                neuralNetwork.Learn(dataset, 10000, true);
 
                 List<double> testResults = neuralNetwork.TestRestData(dataset);
                 for (int i = 0; i < testResults.Count; i++)
                 {
-                    Assert.AreEqual(dataset.Results[dataset.LearnCount + i], Math.Round(testResults[i]));
+                    Assert.AreEqual(dataset.Results[dataset.LearnCount + i], Math.Round(testResults[i]), $"row: {i}");
                 }
             }
 
