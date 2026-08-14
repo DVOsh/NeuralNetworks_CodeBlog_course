@@ -99,21 +99,21 @@ namespace NeuralNetwork_CodeBlog_course
             }
         }
 
-        public double Learn(Dataset dataset, int epoch)
+        public void Learn(Dataset dataset, int epoch, bool needShuffle = false)
         {
-            double error = 0.0;
-
             for (int i = 0; i < epoch; i++)
             {
-                for (int j = 0; j < dataset.Results.Count; j++) 
-                {                                               
-                    double[] input = dataset.Inputs[j];         
+                for (int j = 0; j < dataset.LearnCount; j++) 
+                {
+                    int index = dataset.Indexes[j];
+                    double[] inputs = dataset.Inputs[index];         
 
-                    error += Backpropagation(dataset.Results[j], input);
+                    Backpropagation(dataset.Results[index], inputs);
                 }
-            }
 
-            return error / epoch;
+                if (needShuffle)
+                    dataset.ShuffleLearnDataIndexes();
+            }
         }
 
         private double Backpropagation(double expected, double[] inputs)
