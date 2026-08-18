@@ -11,8 +11,9 @@ namespace NeuralNetwork_Tests
             [TestMethod]
             public void FeedForwardTest()
             {
-                var topology = new Topology(4, 1, 0.1, 2);
-                var neuralNetwork = new NeuralNetwork(topology);
+                var topology = new Topology(4, 1, 2);
+
+                NeuralNetwork neuralNetwork = new(topology, 0.1, FunctionsType.Sigmoid, FunctionsType.Sigmoid);
                 neuralNetwork.Layers[1].Neurons[0].SetWeights(0.5, -0.1, 0.3, -0.1);
                 neuralNetwork.Layers[1].Neurons[1].SetWeights(0.1, -0.3, 0.7, -0.3);
                 neuralNetwork.Layers[2].Neurons[0].SetWeights(1.2, 0.8);
@@ -56,8 +57,9 @@ namespace NeuralNetwork_Tests
                 double[] datasetResults = [0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1];
                 Dataset dataset = new(datasetHeaders, datasetInputs, datasetResults, 20);
 
-                Topology topology = new(4, 1, 0.1, 2);
-                NeuralNetwork neuralNetwork = new(topology);
+                Topology topology = new(4, 1, 2);
+
+                NeuralNetwork neuralNetwork = new(topology, 0.1, FunctionsType.Sigmoid, FunctionsType.Sigmoid);
                 neuralNetwork.Learn(dataset, 100, true);
 
                 List<double> testResults = neuralNetwork.TestRestData(dataset);
@@ -74,8 +76,9 @@ namespace NeuralNetwork_Tests
                 Dataset dataset = new("../../../../../Datasets/heart_decrease/heart.csv", 20);
                 dataset.NormalizeInputs();
 
-                Topology topology = new(dataset.Inputs[0].Length, 1, 0.1, dataset.Inputs[0].Length / 2);
-                NeuralNetwork neuralNetwork = new(topology);
+                Topology topology = new(dataset.Inputs[0].Length, 1, dataset.Inputs[0].Length / 2);
+
+                NeuralNetwork neuralNetwork = new(topology, 0.1, FunctionsType.Sigmoid, FunctionsType.Sigmoid);
                 neuralNetwork.Learn(dataset, 10000, true);
 
                 List<double> testResults = neuralNetwork.TestRestData(dataset);

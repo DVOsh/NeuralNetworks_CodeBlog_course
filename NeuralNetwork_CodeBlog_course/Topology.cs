@@ -6,15 +6,12 @@
 
         public int OutputsCount { get; } 
 
-        public double LearningRate { get; }
-
         public List<int>? HiddenLayers { get; }
 
-        public Topology(int inputCount, int outputCount, double learningRate, params int[] neuronsCountInHiddenLayers)
+        public Topology(int inputCount, int outputCount, params int[] neuronsCountInHiddenLayers)
         {
             InputsCount = inputCount;
             OutputsCount = outputCount;
-            LearningRate = learningRate;
             HiddenLayers = [];
             HiddenLayers?.AddRange(neuronsCountInHiddenLayers);
         }

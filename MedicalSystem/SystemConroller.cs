@@ -13,11 +13,11 @@ namespace MedicalSystem
 
         public SystemConroller()
         {
-            var dataTopology = new Topology(14, 1, 0.1, 7);
-            DataNetwork = new NeuralNetwork(dataTopology);
+            var dataTopology = new Topology(14, 1, 7);
+            DataNetwork = new NeuralNetwork(dataTopology, 0.1, FunctionsType.Sigmoid, FunctionsType.Sigmoid);
 
-            var imageTopology = new Topology(400, 1, 0.1, 200);
-            ImageNetwork = new NeuralNetwork(imageTopology);
+            var imageTopology = new Topology(400, 1, 200);
+            ImageNetwork = new NeuralNetwork(imageTopology, 0.1, FunctionsType.Sigmoid, FunctionsType.Sigmoid);
         }
     }
 }
