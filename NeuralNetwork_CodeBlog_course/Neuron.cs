@@ -8,6 +8,10 @@
 
         public NeuronType NeuronType { get; }
 
+        public Func<double, double> AcFunc { get; set; }
+
+        public Func<double, double> AcFuncDx { get; set; }
+
         public double Output { get; private set; }
 
         public double Delta { get; private set; }
@@ -54,7 +58,7 @@
             }
 
             if (NeuronType != NeuronType.Input)
-                Output = Sigmoid(sum);
+                Output = AcFunc(sum);
             else
                 Output = sum;
 
@@ -66,7 +70,7 @@
             if (NeuronType == NeuronType.Input)
                 return;
 
-            Delta = error * SigmoidDx(this.Output);
+            Delta = error * AcFuncDx(this.Output);
 
             for (int i = 0; i < Weights.Count; i++)
             {
@@ -76,18 +80,6 @@
                 double newWeight = weight - signal * Delta * learningRate;
                 Weights[i] = newWeight;
             }
-        }
-
-        private static double Sigmoid(double x)
-        {
-            return 1.0 / (1.0 + Math.Pow(Math.E, -x));
-        }
-
-        private static double SigmoidDx(double x)
-        {
-            double sigmoid = Sigmoid(x);
-            double result = sigmoid * (1 - sigmoid);
-            return result;
         }
 
         public override string ToString()

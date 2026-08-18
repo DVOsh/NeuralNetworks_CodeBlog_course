@@ -4,65 +4,30 @@ namespace NeuralNetwork_CodeBlog_course
 {
     public class NeuralNetwork
     {
-        public Topology Topology { get; }
-
         public List<Layer> Layers { get; }
 
-        public NeuralNetwork(Topology topology)
-        {
-            Topology = topology;
+        public double LearningRate { get; }
 
+
+
+        public NeuralNetwork(Topology topology, double learningRate, FunctionsType hiddenLayerType, FunctionsType outputLayerType)
+        {
             Layers = [];
+            LearningRate = learningRate;
+            ActivationFunctions.SetHiddenLayerFunctions(hiddenLayerType);
+            ActivationFunctions.SetOutputLayerFunctions(outputLayerType);
 
-            CreateInputLayer();
-            CreateHiddenLayers();
-            CreateOutputLayer();
+            CreateLayers(topology);
         }
 
-        private void CreateInputLayer()
+        public void CreateLayers(Topology topology)
         {
-            List<Neuron> inputNeurons = [];
-            for (int i = 0; i < Topology.InputsCount; i++)
+            Layers.Add(new Layer(NeuronType.Input, topology.InputsCount));
+            for (int i = 0; i < topology.HiddenLayers.Count; i++)
             {
-                Neuron neuron = new(1, NeuronType.Input);
-                inputNeurons.Add(neuron);
+                Layers.Add(new Layer(NeuronType.Hidden, topology.HiddenLayers[i]));
             }
-
-            Layer inputLayer = new(inputNeurons, NeuronType.Input);
-            Layers.Add(inputLayer);
-        }
-
-        private void CreateHiddenLayers()
-        {
-            for (int j = 0; j < Topology?.HiddenLayers?.Count; j++)
-            {
-                List<Neuron> hiddenNeurons = [];
-                Layer lastLayer = Layers.Last();
-
-                for (int i = 0; i < Topology.HiddenLayers[j]; i++)
-                {
-                    Neuron neuron = new(lastLayer.NeuronCount);
-                    hiddenNeurons.Add(neuron);
-                }
-
-                Layer hiddenLayer = new(hiddenNeurons);
-                Layers.Add(hiddenLayer);
-            }
-        }
-
-        private void CreateOutputLayer()
-        {
-            List<Neuron> outputNeurons = [];
-            Layer lastLayer = Layers.Last();
-
-            for (int i = 0; i < Topology.OutputsCount; i++)
-            {
-                Neuron neuron = new(lastLayer.NeuronCount, NeuronType.Output);
-                outputNeurons.Add(neuron);
-            }
-
-            Layer outputLayer = new(outputNeurons, NeuronType.Output);
-            Layers.Add(outputLayer);
+            Layers.Add(new Layer(NeuronType.Output, topology.OutputsCount));
         }
 
         public double FeedForward(double[] inputSignals)
@@ -80,7 +45,7 @@ namespace NeuralNetwork_CodeBlog_course
                 }
             }
 
-            if (Topology.OutputsCount == 1)
+            if (Layers.Last().NeuronsCount == 1) // проверить значение
             {
                 return Layers.Last().Neurons[0].Output;
             }
@@ -127,7 +92,7 @@ namespace NeuralNetwork_CodeBlog_course
             // Корректировка весов в выходном слое
             foreach (Neuron neuron in Layers.Last().Neurons)
             {
-                neuron.WeightsCorrection(difference, Topology.LearningRate);
+                neuron.WeightsCorrection(difference, LearningRate);
             }
 
             // Перебор слоев в обратном порядке, за исключением выходного слоя
@@ -136,16 +101,16 @@ namespace NeuralNetwork_CodeBlog_course
                 Layer layer = Layers[j];
                 Layer nextLayer = Layers[j + 1];
 
-                for (int i = 0; i < layer.NeuronCount; i++)
+                for (int i = 0; i < layer.NeuronsCount; i++)
                 {
                     Neuron neuron = layer.Neurons[i];
 
-                    for (int k = 0; k < nextLayer.NeuronCount; k++)
+                    for (int k = 0; k < nextLayer.NeuronsCount; k++)
                     {
                         Neuron nextLayerNeuron = nextLayer.Neurons[k];
                         double error = nextLayerNeuron.Weights[i] * nextLayerNeuron.Delta;
 
-                        neuron.WeightsCorrection(error, Topology.LearningRate);
+                        neuron.WeightsCorrection(error, LearningRate);
                     }
                 }
             }
