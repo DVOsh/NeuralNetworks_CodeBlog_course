@@ -15,6 +15,8 @@
         public int LearnCount { get; private set; }
         public int TestCount { get; private set; }
 
+        public bool NeedNormalize { get; set; }
+
         // Задание процента выборки для проведения тестов обучения
         public double TestPct
         {
@@ -34,7 +36,7 @@
             }
         }
 
-        public Dataset(string[] headers, double[,] inputs, double[] results, double testPct = 0)
+        public Dataset(string[] headers, double[,] inputs, double[] results, bool needNormalize, double testPct = 0)
         {
             if (headers == null)
                 throw new ArgumentNullException("Set headers!");
@@ -49,9 +51,10 @@
             Results = results.ToList();
             TestPct = testPct;
             Indexes = Enumerable.Range(0, LearnCount).ToList();
+            NeedNormalize = needNormalize;
         }
 
-        public Dataset(string path, double testPct)
+        public Dataset(string path, bool needNormalize, double testPct)
         {
             using StreamReader sr = new(path);
             Headers = sr.ReadLine()?.Split(',').SkipLast(1).ToList()
@@ -73,41 +76,39 @@
 
             TestPct = testPct;
             Indexes = Enumerable.Range(0, LearnCount).ToList();
+            NeedNormalize = needNormalize;
         }
 
-        public void NormalizeInputs()
+        public static double[] NormalizeInputs(double[] inputs)
         {
-            if (Inputs.Count < 1)
+            if (inputs.Length < 1)
                 throw new InvalidOperationException("Dataset is empty!");
             
-            int rowsCount = Inputs.Count;
-            int headersCount = Headers.Count;
-            double[,] result = new double[rowsCount, headersCount];
+            double[] results = new double[inputs.Length];
 
-            for (int row = 0; row < rowsCount; row++)
+            // Среднее значение сигнала
+            double sum = 0.0;
+            for (int i = 0; i < inputs.Length; i++)
             {
-                // Среднее значение сигнала
-                double sum = 0.0;
-                for (int item = 0; item < headersCount; item++)
-                {
-                    sum += Inputs[row][item];
-                }
-                double average = sum / headersCount;
-
-                // Стандартное квадратичное отклонение сигнала
-                double error = 0.0;
-                for (int item = 0; item < headersCount; item++)
-                {
-                    error += Math.Pow((Inputs[row][item] - average), 2);
-                }
-                double stDev = Math.Sqrt(error / headersCount);
-
-                // Нормализованные значения
-                for (int item = 0; item < headersCount; item++)
-                {
-                    result[row, item] = (Inputs[row][item] - average) / stDev;
-                }
+                sum += inputs[i];
             }
+            double average = sum / inputs.Length;
+
+            // Стандартное квадратичное отклонение сигнала
+            double error = 0.0;
+            for (int i = 0; i < inputs.Length; i++)
+            {
+                error += Math.Pow((inputs[i] - average), 2);
+            }
+            double stDev = Math.Sqrt(error / inputs.Length);
+
+            // Нормализованные значения
+            for (int i = 0; i < inputs.Length; i++)
+            {
+                results[i] = (inputs[i] - average) / stDev;
+            }
+
+            return results;
         }
 
         private static double[,] Scalling(double[,] inputs)

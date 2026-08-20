@@ -55,7 +55,7 @@ namespace NeuralNetwork_Tests
                     { 1, 1, 1, 1 }
                 };
                 double[] datasetResults = [0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1];
-                Dataset dataset = new(datasetHeaders, datasetInputs, datasetResults, 20);
+                Dataset dataset = new(datasetHeaders, datasetInputs, datasetResults, false, 20);
 
                 Topology topology = new(4, 1, 2);
 
@@ -73,8 +73,7 @@ namespace NeuralNetwork_Tests
             [TestMethod]
             public void Heart_DatasetTest()
             {
-                Dataset dataset = new("../../../../../Datasets/heart_decrease/heart.csv", 20);
-                dataset.NormalizeInputs();
+                Dataset dataset = new("../../../../../Datasets/heart_decrease/heart.csv", true, 20);
 
                 Topology topology = new(dataset.Inputs[0].Length, 1, dataset.Inputs[0].Length / 2);
 
