@@ -8,7 +8,7 @@ namespace NeuralNetwork_CodeBlog_course
 
         public double LearningRate { get; }
 
-        public NeuralNetwork(Topology topology, double learningRate, FunctionsType hiddenLayerType, FunctionsType outputLayerType)
+        public NeuralNetwork(Topology topology, double learningRate, FunctionsType? hiddenLayerType, FunctionsType? outputLayerType)
         {
             Layers = [];
             LearningRate = learningRate;
@@ -21,9 +21,12 @@ namespace NeuralNetwork_CodeBlog_course
         private void CreateLayers(Topology topology)
         {
             Layers.Add(new Layer(NeuronType.Input, topology.InputsCount));
-            for (int i = 0; i < topology.HiddenLayers.Count; i++)
+            if (topology.HiddenLayers != null)
             {
-                Layers.Add(new Layer(NeuronType.Hidden, topology.HiddenLayers[i]));
+                for (int i = 0; i < topology.HiddenLayers.Count; i++)
+                {
+                    Layers.Add(new Layer(NeuronType.Hidden, topology.HiddenLayers[i]));
+                }
             }
             Layers.Add(new Layer(NeuronType.Output, topology.OutputsCount));
         }
