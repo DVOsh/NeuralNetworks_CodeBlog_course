@@ -8,9 +8,7 @@ namespace NeuralNetwork_CodeBlog_course
 
         public double LearningRate { get; }
 
-
-
-        public NeuralNetwork(Topology topology, double learningRate, FunctionsType hiddenLayerType, FunctionsType outputLayerType)
+        public NeuralNetwork(Topology topology, double learningRate, FunctionsType? hiddenLayerType, FunctionsType? outputLayerType)
         {
             Layers = [];
             LearningRate = learningRate;
@@ -20,18 +18,24 @@ namespace NeuralNetwork_CodeBlog_course
             CreateLayers(topology);
         }
 
-        public void CreateLayers(Topology topology)
+        private void CreateLayers(Topology topology)
         {
             Layers.Add(new Layer(NeuronType.Input, topology.InputsCount));
-            for (int i = 0; i < topology.HiddenLayers.Count; i++)
+            if (topology.HiddenLayers != null)
             {
-                Layers.Add(new Layer(NeuronType.Hidden, topology.HiddenLayers[i]));
+                for (int i = 0; i < topology.HiddenLayers.Count; i++)
+                {
+                    Layers.Add(new Layer(NeuronType.Hidden, topology.HiddenLayers[i]));
+                }
             }
             Layers.Add(new Layer(NeuronType.Output, topology.OutputsCount));
         }
 
-        public double FeedForward(double[] inputSignals)
+        public double FeedForward(double[] inputSignals, bool needNormalize = false)
         {
+            if (needNormalize)
+                inputSignals = Dataset.NormalizeInputs(inputSignals);
+
             SendSignalsToInputNeurons(inputSignals);
 
             for (int i = 1; i < Layers.Count; i++)
@@ -45,7 +49,7 @@ namespace NeuralNetwork_CodeBlog_course
                 }
             }
 
-            if (Layers.Last().NeuronsCount == 1) // проверить значение
+            if (Layers.Last().NeuronsCount == 1)
             {
                 return Layers.Last().Neurons[0].Output;
             }
@@ -71,7 +75,9 @@ namespace NeuralNetwork_CodeBlog_course
                 for (int j = 0; j < dataset.LearnCount; j++) 
                 {
                     int index = dataset.Indexes[j];
-                    double[] inputs = dataset.Inputs[index];         
+                    double[] inputs = dataset.NeedNormalize
+                                      ? Dataset.NormalizeInputs(dataset.Inputs[index])
+                                      : dataset.Inputs[index];
 
                     Backpropagation(dataset.Results[index], inputs);
                 }
@@ -125,7 +131,7 @@ namespace NeuralNetwork_CodeBlog_course
 
             for (int i = dataset.LearnCount; i < dataset.Inputs.Count; i++)
             {
-                results.Add(FeedForward(dataset.Inputs[i]));
+                results.Add(FeedForward(dataset.Inputs[i], dataset.NeedNormalize));
             }
 
             return results;

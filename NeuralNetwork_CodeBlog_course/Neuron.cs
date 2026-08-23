@@ -8,9 +8,9 @@
 
         public NeuronType NeuronType { get; }
 
-        public Func<double, double> AcFunc { get; set; }
+        public Func<double, double>? AcFunc { get; set; }
 
-        public Func<double, double> AcFuncDx { get; set; }
+        public Func<double, double>? AcFuncDx { get; set; }
 
         public double Output { get; private set; }
 
@@ -58,9 +58,13 @@
             }
 
             if (NeuronType != NeuronType.Input)
-                Output = AcFunc(sum);
+            {
+                Output = AcFunc != null ? AcFunc(sum) : sum;
+            }
             else
+            {
                 Output = sum;
+            }
 
             return Output;
         }
@@ -70,7 +74,8 @@
             if (NeuronType == NeuronType.Input)
                 return;
 
-            Delta = error * AcFuncDx(this.Output);
+            Delta = AcFuncDx != null ? AcFuncDx(Output) * error
+                                     : Output * error;
 
             for (int i = 0; i < Weights.Count; i++)
             {

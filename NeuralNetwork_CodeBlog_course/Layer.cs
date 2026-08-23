@@ -41,8 +41,8 @@
 
             for (int i = 0; i < neuronsCount; i++)
             {
-                Neuron neuron = new(neuronInputsCount); // !!! inputsCount???
-                (neuron.AcFunc, neuron.AcFuncDx) = ActivationFunctions.HiddenLayerFunctions;
+                Neuron neuron = new(neuronInputsCount);
+                (neuron.AcFunc, neuron.AcFuncDx) = ActivationFunctions.HiddenLayerFunctions ?? (null, null);
                 hiddenNeurons.Add(neuron);
             }
 
@@ -56,7 +56,7 @@
             for (int i = 0; i < neuronsCount; i++)
             {
                 Neuron neuron = new(neuronInputsCount, NeuronType.Output);
-                (neuron.AcFunc, neuron.AcFuncDx) = ActivationFunctions.OutputLayerFunctions;
+                (neuron.AcFunc, neuron.AcFuncDx) = ActivationFunctions.OutputLayerFunctions ?? (null, null);
                 outputNeurons.Add(neuron);
             }
 
