@@ -59,15 +59,14 @@ namespace NeuralNetwork_Tests
 
                 Topology topology = new(4, 1, 2);
 
-                NeuralNetwork neuralNetwork = new(topology, 0.1, null, FunctionsType.Sigmoid);
-                neuralNetwork.Learn(dataset, 1000, true);
+                NeuralNetwork neuralNetwork = new(topology, 1, null, FunctionsType.Sigmoid);
+                neuralNetwork.Learn(dataset, 2, true);
 
                 List<double> testResults = neuralNetwork.TestRestData(dataset);
                 for (int i = 0; i < testResults.Count; i++)
                 {
                     Assert.AreEqual(dataset.Results[dataset.LearnCount + i], Math.Round(testResults[i]), $"row: {i}");
                 }
-
             }
 
             [TestMethod]
