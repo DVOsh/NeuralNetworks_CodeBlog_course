@@ -49,7 +49,7 @@ namespace NeuralNetwork_CodeBlog_course
                 }
             }
 
-            if (Layers.Last().NeuronsCount == 1) // проверить значение
+            if (Layers.Last().NeuronsCount == 1)
             {
                 return Layers.Last().Neurons[0].Output;
             }
@@ -131,7 +131,7 @@ namespace NeuralNetwork_CodeBlog_course
 
             for (int i = dataset.LearnCount; i < dataset.Inputs.Count; i++)
             {
-                results.Add(FeedForward(dataset.Inputs[i]));
+                results.Add(FeedForward(dataset.Inputs[i], dataset.NeedNormalize));
             }
 
             return results;
