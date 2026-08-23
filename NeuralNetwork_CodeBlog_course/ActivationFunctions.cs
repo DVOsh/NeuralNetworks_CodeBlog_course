@@ -15,6 +15,7 @@ namespace NeuralNetwork_CodeBlog_course
             HiddenLayerFunctions = type switch
             {
                 FunctionsType.Sigmoid => (Sigmoid, SigmoidDx),
+                FunctionsType.ReLU => (ReLU, ReLUDx),
                 null => null,
                 _ => throw new ArgumentOutOfRangeException(nameof(type), $"Not expected activation function type value: {type}")
             };
@@ -25,13 +26,14 @@ namespace NeuralNetwork_CodeBlog_course
             OutputLayerFunctions = type switch
             {
                 FunctionsType.Sigmoid => (Sigmoid, SigmoidDx),
+                FunctionsType.ReLU => (ReLU, ReLUDx),
                 null => null,
                 _ => throw new ArgumentOutOfRangeException(nameof(type), $"Not expected activation function type value: {type}")
 
             };
         }
 
-        public static double Sigmoid(double x)
+        private static double Sigmoid(double x)
         {
             return 1.0 / (1.0 + Math.Pow(Math.E, -x));
         }
@@ -39,6 +41,16 @@ namespace NeuralNetwork_CodeBlog_course
         private static double SigmoidDx(double x)
         {
             return Sigmoid(x) * (1 - Sigmoid(x));
+        }
+
+        private static double ReLU(double x)
+        {
+            return x >= 0 ? x : 0;
+        }
+
+        private static double ReLUDx(double x)
+        {
+            return x <= 0 ? 0 : 1;
         }
     }
 }

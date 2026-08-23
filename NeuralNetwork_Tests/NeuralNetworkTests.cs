@@ -59,8 +59,8 @@ namespace NeuralNetwork_Tests
 
                 Topology topology = new(4, 1, 2);
 
-                NeuralNetwork neuralNetwork = new(topology, 1, null, FunctionsType.Sigmoid);
-                neuralNetwork.Learn(dataset, 2, true);
+                NeuralNetwork neuralNetwork = new(topology, 0.1, FunctionsType.ReLU, FunctionsType.Sigmoid);
+                neuralNetwork.Learn(dataset, 1000, true);
 
                 List<double> testResults = neuralNetwork.TestRestData(dataset);
                 for (int i = 0; i < testResults.Count; i++)
@@ -76,7 +76,7 @@ namespace NeuralNetwork_Tests
 
                 Topology topology = new(dataset.Inputs[0].Length, 1, dataset.Inputs[0].Length / 2);
 
-                NeuralNetwork neuralNetwork = new(topology, 0.1, null, FunctionsType.Sigmoid);
+                NeuralNetwork neuralNetwork = new(topology, 0.1, FunctionsType.ReLU, FunctionsType.Sigmoid);
                 neuralNetwork.Learn(dataset, 10000, true);
 
                 List<double> testResults = neuralNetwork.TestRestData(dataset);
