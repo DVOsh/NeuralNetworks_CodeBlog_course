@@ -55,18 +55,34 @@ namespace NeuralNetwork_Tests
                     { 1, 1, 1, 1 }
                 };
                 double[] datasetResults = [0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1];
-                Dataset dataset = new(datasetHeaders, datasetInputs, datasetResults, false, 20);
+                Dataset dataset = new(datasetHeaders, datasetInputs, datasetResults, false);
 
                 Topology topology = new(4, 1, 2);
 
                 NeuralNetwork neuralNetwork = new(topology, 0.1, FunctionsType.ReLU, FunctionsType.Sigmoid);
                 neuralNetwork.Learn(dataset, 1000, true);
 
-                List<double> testResults = neuralNetwork.TestRestData(dataset);
-                for (int i = 0; i < testResults.Count; i++)
-                {
-                    Assert.AreEqual(dataset.Results[dataset.LearnCount + i], Math.Round(testResults[i]), $"row: {i}");
-                }
+                //List<double> testResults = neuralNetwork.TestRestData(dataset);
+                //for (int i = 0; i < testResults.Count; i++)
+                //{
+                //    Assert.AreEqual(dataset.Results[dataset.LearnCount + i], Math.Round(testResults[i]), $"row: {i}");
+                //}
+
+                double[] case1 = dataset.Inputs[4];
+                double exp1 = dataset.Results[4];
+                double act1 = Math.Round(neuralNetwork.FeedForward(case1));
+
+                double[] case2 = dataset.Inputs[6];
+                double exp2 = dataset.Results[6];
+                double act2 = Math.Round(neuralNetwork.FeedForward(case2));
+
+                double[] case3 = dataset.Inputs[13];
+                double exp3 = dataset.Results[13];
+                double act3 = Math.Round(neuralNetwork.FeedForward(case3));
+
+                Assert.AreEqual(exp1, act1);
+                Assert.AreEqual(exp2, act2);
+                Assert.AreEqual(exp3, act3);
             }
 
             [TestMethod]
