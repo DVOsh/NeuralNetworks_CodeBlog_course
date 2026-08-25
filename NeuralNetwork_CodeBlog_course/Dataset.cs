@@ -54,7 +54,7 @@
             NeedNormalize = needNormalize;
         }
 
-        public Dataset(string path, bool needNormalize, double testPct)
+        public Dataset(string path, bool needNormalize, double testPct = 0)
         {
             using StreamReader sr = new(path);
             Headers = sr.ReadLine()?.Split(',').SkipLast(1).ToList()
